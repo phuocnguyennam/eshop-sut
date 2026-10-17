@@ -1,0 +1,42 @@
+services:
+  # 1. Backend API & SQLite Database
+  backend:
+    build: ./backend
+    container_name: eshop-backend
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/database.sqlite:/app/database.sqlite
+
+  # 2. Frontend Web (Khách hàng)
+  frontend-web:
+    build: ./frontend-web
+    container_name: eshop-web
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+  # 3. Frontend Admin (Quản trị viên)
+  frontend-admin:
+    build: ./frontend-admin
+    container_name: eshop-admin
+    restart: always
+    ports:
+      - "5174:5174"
+    depends_on:
+      - backend
+
+  # 4. Frontend Mobile (Dành riêng cho kiểm thử Pool D)
+  frontend-mobile:
+    build: ./frontend-mobile
+    container_name: eshop-mobile
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+    depends_on:
+      - backend
